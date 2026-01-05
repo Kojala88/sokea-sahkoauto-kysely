@@ -8,53 +8,28 @@
     :root { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
     body { margin: 0; background: #0b0f14; color: #e8eef7; }
     .wrap { max-width: 980px; margin: 0 auto; padding: 24px; }
-    .card {
-      background: #111826;
-      border: 1px solid #223047;
-      border-radius: 18px;
-      padding: 18px;
-      box-shadow: 0 8px 30px rgba(0,0,0,.25);
-      overflow: hidden;
-    }
+    .card { background: #111826; border: 1px solid #223047; border-radius: 18px; padding: 18px; box-shadow: 0 8px 30px rgba(0,0,0,.25); overflow: hidden; }
     h1 { font-size: 22px; margin: 0 0 6px; }
     h2 { margin: 0; font-size: 18px; }
     p { margin: 8px 0; color: #b7c6dd; line-height: 1.45; }
     .muted { color: #9bb0cc; font-size: 13px; }
-    .progress {
-      height: 10px;
-      background: #0f1725;
-      border: 1px solid #223047;
-      border-radius: 999px;
-      overflow: hidden;
-      margin: 14px 0 18px;
-    }
+
+    .progress { height: 10px; background: #0f1725; border: 1px solid #223047; border-radius: 999px; overflow: hidden; margin: 14px 0 18px; }
     .bar { height: 100%; width: 0%; background: #4f8cff; transition: width .25s ease; }
 
     .q { font-size: 18px; margin: 0 0 10px; }
     .opts { display: grid; gap: 10px; margin-top: 10px; }
     button.opt {
-      text-align: left;
-      padding: 12px 12px;
-      border-radius: 14px;
-      border: 1px solid #2a3b57;
-      background: #0f1725;
-      color: #e8eef7;
-      cursor: pointer;
-      transition: transform .03s ease, border-color .15s ease, background .15s ease;
+      text-align: left; padding: 12px 12px; border-radius: 14px;
+      border: 1px solid #2a3b57; background: #0f1725; color: #e8eef7;
+      cursor: pointer; transition: transform .03s ease, border-color .15s ease, background .15s ease;
     }
     button.opt:hover { border-color: #4f8cff; }
     button.opt.selected { border-color: #4f8cff; background: #0c1524; }
     button.opt:active { transform: scale(0.99); }
 
     .row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
-    .btn {
-      padding: 10px 12px;
-      border-radius: 12px;
-      border: 1px solid #2a3b57;
-      background: #0f1725;
-      color: #e8eef7;
-      cursor: pointer;
-    }
+    .btn { padding: 10px 12px; border-radius: 12px; border: 1px solid #2a3b57; background: #0f1725; color: #e8eef7; cursor: pointer; }
     .btn.primary { background: #4f8cff; border-color: #4f8cff; color: #0b0f14; font-weight: 650; }
     .btn:disabled { opacity: .5; cursor: not-allowed; }
 
@@ -94,27 +69,10 @@
   <div class="wrap">
     <div class="card" id="app">
 
-      <!-- OPTION C: Premium header -->
-      <div style="
-        display:flex;
-        justify-content:center;
-        padding:18px;
-        margin:-18px -18px 16px -18px;
-        border-bottom:1px solid #223047;
-        background:linear-gradient(180deg,#0f1725,#0b0f14);
-      ">
+      <!-- OPTION C header -->
+      <div style="display:flex; justify-content:center; padding:18px; margin:-18px -18px 16px -18px; border-bottom:1px solid #223047; background:linear-gradient(180deg,#0f1725,#0b0f14);">
         <a href="https://www.koneistusojala.fi" target="_blank" rel="noopener" aria-label="Koneistus Ojala">
-          <img
-            src="logo-koneistus-ojala.png"
-            alt="Koneistus Ojala"
-            style="
-              max-height:110px;
-              max-width:520px;
-              width:auto;
-              height:auto;
-              display:block;
-            "
-          />
+          <img src="logo-koneistus-ojala.png" alt="Koneistus Ojala" style="max-height:110px; max-width:520px; width:auto; height:auto; display:block;" />
         </a>
       </div>
 
@@ -134,98 +92,42 @@
   </div>
 
 <script>
-  /* --- Pienet “kuvat” (inline SVG) --- */
   function carSvg(kind){
-    // kind: "suv", "sedan", "hatch"
     const body = (kind==="sedan")
       ? "M6 18h5l5-6h16l6 6h4"
       : (kind==="hatch")
         ? "M6 18h6l4-6h14l7 6h5"
         : "M5 18h7l4-6h18l6 6h5";
     return `
-    <svg viewBox="0 0 64 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <path d="${body}" stroke="#B7C6DD" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M9 18v6h46v-6" stroke="#B7C6DD" stroke-width="2.5" stroke-linecap="round"/>
-      <circle cx="18" cy="26" r="4" stroke="#B7C6DD" stroke-width="2.5"/>
-      <circle cx="46" cy="26" r="4" stroke="#B7C6DD" stroke-width="2.5"/>
-      <path d="M24 12h10" stroke="#B7C6DD" stroke-width="2.5" stroke-linecap="round"/>
-    </svg>`;
+      <svg viewBox="0 0 64 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="${body}" stroke="#B7C6DD" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M9 18v6h46v-6" stroke="#B7C6DD" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="18" cy="26" r="4" stroke="#B7C6DD" stroke-width="2.5"/>
+        <circle cx="46" cy="26" r="4" stroke="#B7C6DD" stroke-width="2.5"/>
+        <path d="M24 12h10" stroke="#B7C6DD" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>`;
   }
 
-  /**
-   * Autot mukana testissä.
-   * Lisätty hintatason tagit:
-   * - price_budget / price_mid / price_premium
-   */
+  // Autos (CLA Electric added)
   const cars = [
-    { code:"Project Redwood", name:"Tesla Model Y", kind:"suv",
-      tags:new Set(["crossover","family","range_ok","fast_charge","good_infra","tech","tow_capable","popular","known_brand","price_mid"]),
-      notes:"Suosittu kokonaispaketti. Hyvä arki + reissut. Trimmi (RWD/AWD) ehdotetaan lopussa." },
-    { code:"Project Cedar", name:"Volkswagen ID.4", kind:"suv",
-      tags:new Set(["crossover","family","comfort","practical","tow_capable","popular","known_brand","price_mid"]),
-      notes:"Perhe-crossover: mukavuus ja käytännöllisyys." },
-    { code:"Project Aurora", name:"Tesla Model 3", kind:"sedan",
-      tags:new Set(["sedan","efficient","range_ok","fast_charge","good_infra","tech","popular","known_brand","price_mid"]),
-      notes:"Tehokas ja tekninen sedan. Hyvä reissuun ja arkeen." },
+    { code:"Project Redwood", name:"Tesla Model Y", kind:"suv", tags:new Set(["crossover","family","range_ok","fast_charge","good_infra","tech","tow_capable","popular","known_brand","price_mid"]), notes:"Suosittu kokonaispaketti. Hyvä arki + reissut. Trimmi (RWD/AWD) ehdotetaan lopussa." },
+    { code:"Project Aurora", name:"Tesla Model 3", kind:"sedan", tags:new Set(["sedan","efficient","range_ok","fast_charge","good_infra","tech","popular","known_brand","price_mid"]), notes:"Tehokas ja tekninen sedan. Hyvä reissuun ja arkeen." },
 
-    { code:"Project Silverline", name:"Mercedes-Benz CLA Electric", kind:"sedan",
-      tags:new Set(["sedan","premium","tech","highway","range_ok","known_brand","price_premium"]),
-      notes:"Premium-sedan painotus: brändi, mukavuus/tekniikka ja moottoritieajon fiilis." },
+    { code:"Project Silverline", name:"Mercedes-Benz CLA Electric", kind:"sedan", tags:new Set(["sedan","premium","tech","highway","range_ok","known_brand","price_premium"]), notes:"Premium-sedan painotus: brändi, mukavuus/tekniikka ja moottoritieajon fiilis." },
 
-    { code:"Project Atlas", name:"Volkswagen ID.7", kind:"sedan",
-      tags:new Set(["sedan","comfort","range_ok","practical","highway","known_brand","price_premium"]),
-      notes:"Pitkän matkan fiilis: tilaa ja mukavuutta, sopii moottoritielle." },
-    { code:"Project Pine", name:"Volkswagen ID.3", kind:"hatch",
-      tags:new Set(["hatchback","city","compact","practical","popular","known_brand","price_mid"]),
-      notes:"Kompakti arkeen/kaupunkiin." },
-    { code:"Project Saffron", name:"Kia EV3", kind:"suv",
-      tags:new Set(["crossover_small","city","practical","tech","value","known_brand","price_mid"]),
-      notes:"Pienempi crossover: arki + moderni fiilis, usein hyvä hinta/ominaisuudet." },
-    { code:"Project Ruby", name:"Renault 5 E-Tech Electric", kind:"hatch",
-      tags:new Set(["city","compact","hatchback","fun","value","known_brand","price_mid"]),
-      notes:"Kaupunkikokoluokka ja persoonallinen hatchback-idea." },
-    { code:"Project Fjord", name:"Škoda Elroq", kind:"suv",
-      tags:new Set(["crossover","family","practical","spacey","tow_capable","known_brand","price_mid"]),
-      notes:"Tilapainotus ja järkevyys. Hyvä perhe/arkisuunta." },
-    { code:"Project Birch", name:"Škoda Enyaq", kind:"suv",
-      tags:new Set(["crossover","family","spacey","comfort","tow_capable","known_brand","price_mid"]),
-      notes:"Isohko ja tilava. Perhe + tavara + mukavuus." },
-    { code:"Project Quartz", name:"BMW iX1", kind:"suv",
-      tags:new Set(["crossover","premium","tech","comfort","family","tow_capable","known_brand","price_premium"]),
-      notes:"Premium-painotus ja helppo crossover-kori." },
-    { code:"Project Obsidian", name:"Audi Q6 e-tron", kind:"suv",
-      tags:new Set(["crossover","premium","tech","comfort","fast_charge","tow_capable","known_brand","price_premium"]),
-      notes:"Premium + moderni tekniikka/lataus -painotus." },
-    { code:"Project Nimbus", name:"Volvo EX30", kind:"suv",
-      tags:new Set(["crossover_small","city","tech","safety","known_brand","popular","price_mid"]),
-      notes:"Pieni ja moderni: kaupunki + turvallisuus/tekniikka." },
-    { code:"Project Slate", name:"BMW i4", kind:"sedan",
-      tags:new Set(["sedan","premium","fun","highway","range_ok","known_brand","price_premium"]),
-      notes:"Ajamisen fiilis + premium-sedan." },
-    { code:"Project Citron", name:"Citroën e-C3", kind:"hatch",
-      tags:new Set(["city","budget","compact","simple","value","known_brand","price_budget"]),
-      notes:"Budjetti + kaupunki. Simppeli ja järkevä perusratkaisu." },
-    { code:"Project Ember", name:"Cupra Born", kind:"hatch",
-      tags:new Set(["hatchback","fun","compact","tech","known_brand","niche","price_mid"]),
-      notes:"Sporttisempi fiilis kompaktissa koossa." },
-    { code:"Project Lumen", name:"Audi Q4 e-tron", kind:"suv",
-      tags:new Set(["crossover","premium","comfort","family","tow_capable","known_brand","price_premium"]),
-      notes:"Premium-crossover arkeen: mukavuus ja yleiskäyttö." },
-    { code:"Project Polar", name:"Mercedes EQA", kind:"suv",
-      tags:new Set(["crossover_small","premium","comfort","tech","known_brand","price_premium"]),
-      notes:"Premium-kompakti crossover: mukavuus ja hiljaisuus edellä." },
-    { code:"Project Meadow", name:"Renault Scenic E-Tech Electric", kind:"suv",
-      tags:new Set(["family","spacey","practical","comfort","tow_capable","known_brand","price_mid"]),
-      notes:"Perhe- ja tilapainotus. Arkikäyttö + tavara." },
-    { code:"Project Pebble", name:"Dacia Spring", kind:"hatch",
-      tags:new Set(["city","budget","simple","compact","value","known_brand","price_budget"]),
-      notes:"Minimi-budjetti ja kaupunki. Ei reissupainotteiseen käyttöön." },
-    { code:"Project Granite", name:"Ford Explorer (Electric)", kind:"suv",
-      tags:new Set(["crossover","family","practical","comfort","tow_capable","known_brand","price_mid"]),
-      notes:"Perhe-crossover painotus. Helppo yleiskäyttö." },
+    { code:"Project Cedar", name:"Volkswagen ID.4", kind:"suv", tags:new Set(["crossover","family","comfort","practical","tow_capable","popular","known_brand","price_mid"]), notes:"Perhe-crossover: mukavuus ja käytännöllisyys." },
+    { code:"Project Atlas", name:"Volkswagen ID.7", kind:"sedan", tags:new Set(["sedan","comfort","range_ok","practical","highway","known_brand","price_premium"]), notes:"Pitkän matkan fiilis: tilaa ja mukavuutta, sopii moottoritielle." },
+    { code:"Project Pine", name:"Volkswagen ID.3", kind:"hatch", tags:new Set(["hatchback","city","compact","practical","popular","known_brand","price_mid"]), notes:"Kompakti arkeen/kaupunkiin." },
+    { code:"Project Saffron", name:"Kia EV3", kind:"suv", tags:new Set(["crossover_small","city","practical","tech","value","known_brand","price_mid"]), notes:"Pienempi crossover: arki + moderni fiilis, usein hyvä hinta/ominaisuudet." },
+    { code:"Project Ruby", name:"Renault 5 E-Tech Electric", kind:"hatch", tags:new Set(["city","compact","hatchback","fun","value","known_brand","price_mid"]), notes:"Kaupunkikokoluokka ja persoonallinen hatchback-idea." },
+    { code:"Project Birch", name:"Škoda Enyaq", kind:"suv", tags:new Set(["crossover","family","spacey","comfort","tow_capable","known_brand","price_mid"]), notes:"Isohko ja tilava. Perhe + tavara + mukavuus." },
+    { code:"Project Nimbus", name:"Volvo EX30", kind:"suv", tags:new Set(["crossover_small","city","tech","safety","known_brand","popular","price_mid"]), notes:"Pieni ja moderni: kaupunki + turvallisuus/tekniikka." },
+    { code:"Project Slate", name:"BMW i4", kind:"sedan", tags:new Set(["sedan","premium","fun","highway","range_ok","known_brand","price_premium"]), notes:"Ajamisen fiilis + premium-sedan." },
+    { code:"Project Citron", name:"Citroën e-C3", kind:"hatch", tags:new Set(["city","budget","compact","simple","value","known_brand","price_budget"]), notes:"Budjetti + kaupunki. Simppeli ja järkevä perusratkaisu." },
+    { code:"Project Pebble", name:"Dacia Spring", kind:"hatch", tags:new Set(["city","budget","simple","compact","value","known_brand","price_budget"]), notes:"Minimi-budjetti ja kaupunki. Ei reissupainotteiseen käyttöön." },
   ];
 
-  /* Kysymykset – lisätty budjettikysymykset (maksimi + jousto) */
+  // QUESTIONS — budjetti- ja joustokysymykset ovat mukana (#4 ja #5)
   const questions = [
     { q:"Pääasiallinen käyttö?", opts:[
       { t:"Kaupunki/lyhyet matkat", add:{ city:4, compact:2, budget:1, easy:1 } },
@@ -244,6 +146,7 @@
       { t:"Sporttinen ajotuntuma", add:{ fun:5, tech:1 } },
     ]},
 
+    // <-- NÄMÄ KAKSI OVAT NE BUDJETTIKYSYMYKSET
     { q:"Paljonko auton ostohinta saa olla maksimissaan?", opts:[
       { t:"Alle 30 000 €", add:{ price_budget: 8, price_mid: 1, price_premium: -10 } },
       { t:"30 000 – 40 000 €", add:{ price_budget: 5, price_mid: 4, price_premium: -8 } },
@@ -251,7 +154,6 @@
       { t:"55 000 – 70 000 €", add:{ price_mid: 5, price_premium: 4 } },
       { t:"Yli 70 000 €", add:{ price_premium: 8 } },
     ]},
-
     { q:"Kuinka paljon olisit valmis joustamaan budjetissa, jotta saat haluamasi varusteet?", opts:[
       { t:"En jousta käytännössä lainkaan", add:{ budget_strict: 4, price_premium: -2 } },
       { t:"Voin joustaa vähän (noin 5%)", add:{ budget_flex: 2 } },
@@ -267,60 +169,23 @@
     { q:"Kulutus/tehokkuus (km/kWh) – kuinka tärkeää?", opts:[
       { t:"Ei juuri väliä", add:{ comfort:1 } },
       { t:"Tärkeä", add:{ efficient:3, value:1 } },
-      { t:"Erittäin tärkeä (haluan maksimoida tehokkuuden)", add:{ efficient:5, value:2 } },
+      { t:"Erittäin tärkeä", add:{ efficient:5, value:2 } },
     ]},
     { q:"Turvallisuus – kuinka paljon painotat?", opts:[
       { t:"Perus riittää", add:{} },
-      { t:"Tärkeä (avustimet, hyvät valot, aktiivinen turvallisuus)", add:{ safety:3, tech:1 } },
-      { t:"Erittäin tärkeä (maksimipaino turvallisuudelle)", add:{ safety:5, premium:1 } },
-    ]},
-    { q:"Huoltokustannukset & helppo omistaa – miten tärkeää?", opts:[
-      { t:"En mieti tätä paljoa", add:{} },
-      { t:"Tärkeä", add:{ ownership_easy:3, value:1 } },
-      { t:"Erittäin tärkeä (haluan minimoida yllätykset)", add:{ ownership_easy:5, simple:1, value:2 } },
+      { t:"Tärkeä", add:{ safety:3, tech:1 } },
+      { t:"Erittäin tärkeä", add:{ safety:5, premium:1 } },
     ]},
     { q:"Voimansiirto?", opts:[
       { t:"Takaveto käy", add:{ pref_rwd:3 } },
       { t:"Neliveto on tärkeä", add:{ pref_awd:4, snow:2 } },
       { t:"Ei väliä", add:{ practical:1 } },
     ]},
-    { q:"Vetokoukku / peräkärry / pyöräteline?", opts:[
-      { t:"En tarvitse", add:{} },
-      { t:"Olisi kiva", add:{ tow_capable:2, family:1 } },
-      { t:"Tarvitsen (käytännössä pakollinen)", add:{ tow_capable:6, family:2, crossover:1 } },
-    ]},
-    { q:"Matrix-valot?", opts:[
-      { t:"Ei väliä", add:{} },
-      { t:"Olisi kiva", add:{ tech:1, premium:1 } },
-      { t:"Haluan mielellään (pimeä maantie-ajo)", add:{ tech:3, premium:2, highway:1 } },
-    ]},
-    { q:"Auton yleisyys liikenteessä?", opts:[
-      { t:"Ei haittaa vaikka samaa on monella", add:{ popular:2 } },
-      { t:"Mieluummin jotain vähän harvinaisempaa", add:{ niche:3 } },
-      { t:"Haluan selvästi erottuvan/harvinaisen", add:{ niche:5 } },
-    ]},
-    { q:"Pitääkö merkin olla tunnettu ja varma valinta?", opts:[
-      { t:"Ei väliä – ominaisuudet ratkaisee", add:{} },
-      { t:"Jonkin verran – mieluummin tunnettu", add:{ known_brand:2 } },
-      { t:"Erittäin tärkeä – haluan tunnetun merkin", add:{ known_brand:5 } },
-    ]},
-    { q:"Autonomisuus tulevaisuudessa (edistyneet avustimet / kasvava automaatio)?", opts:[
-      { t:"Ei kiinnosta", add:{} },
-      { t:"Perus adaptiivinen/muut avustimet riittää", add:{ safety:1, comfort:1 } },
-      { t:"Haluan että auto on vahvasti tech-painotteinen", add:{ tech:5, good_infra:2, premium:1 } },
-    ]},
-    { q:"Saatavuus – kuinka nopeasti auton pitäisi olla käytössä?", opts:[
-      { t:"Ei kiire", add:{} },
-      { t:"Mieluiten pian (viikkoja, ei kuukausia)", add:{ availability:3 } },
-      { t:"Mahdollisimman nopeasti (varasto/yleinen malli)", add:{ availability:5, popular:1 } },
-    ]},
   ];
 
   const state = { i: 0, answers: Array(questions.length).fill(null), scores: {}, view: "home" };
 
-  function addScores(add) {
-    for (const [k,v] of Object.entries(add)) state.scores[k] = (state.scores[k] || 0) + v;
-  }
+  function addScores(add) { for (const [k,v] of Object.entries(add)) state.scores[k] = (state.scores[k] || 0) + v; }
   function recomputeScores() {
     state.scores = {};
     for (let qi=0; qi<questions.length; qi++){
@@ -331,9 +196,7 @@
   }
   function carScore(car) {
     let total = 0;
-    for (const [k,v] of Object.entries(state.scores)) {
-      if (car.tags.has(k)) total += v;
-    }
+    for (const [k,v] of Object.entries(state.scores)) if (car.tags.has(k)) total += v;
     return total;
   }
 
@@ -342,7 +205,7 @@
     const sporty  = (state.scores.fun || 0) >= 5;
     const highway = (state.scores.highway || 0) >= 3;
     if (model === "Tesla Model Y" || model === "Tesla Model 3") {
-      if (prefAwd) return sporty ? "Trimmi-idea: Performance (jos saatavilla) tai Long Range AWD." : "Trimmi-idea: Long Range AWD.";
+      if (prefAwd) return sporty ? "Trimmi-idea: Performance tai Long Range AWD." : "Trimmi-idea: Long Range AWD.";
       return highway ? "Trimmi-idea: Long Range (reissu) tai RWD jos hinta tärkein." : "Trimmi-idea: RWD (hinta/tehokkuus).";
     }
     return "";
@@ -374,7 +237,7 @@
       </div>
 
       <div class="notice">
-        <b>Vinkki:</b> Tämä on brändisokea testi. Halutessasi voidaan lisätä lopussa periaatefiltteri (sulje merkit pois vasta reveal-vaiheessa ja näytä seuraavat vaihtoehdot).
+        <b>Vinkki:</b> Kysymyslistassa on nyt mukana myös <b>maksimihinta</b> ja <b>budjettijousto</b>.
       </div>
 
       <details id="carsDetails">
@@ -444,21 +307,11 @@
     const top = ranked.slice(0, 5);
     const usedTags = Object.keys(state.scores).filter(k => (state.scores[k] || 0) > 0);
 
-    const copyText =
-      top.slice(0,3).map((x,i)=>`#${i+1} ${x.car.name} (${x.pts}p)`).join("\n") +
-      `\n\nTesti: sokea sähköauto-kysely`;
-
     screen.innerHTML = `
       <p class="muted">Edistyminen: 100%</p>
       <h2 style="margin:0 0 8px;">✅ Valmis! Nyt paljastetaan suositus</h2>
-      <p class="small">Alla TOP 5. Ensimmäinen on osuvin pisteytyksen mukaan.</p>
 
-      <div style="display:flex; gap:10px; flex-wrap:wrap; margin: 10px 0;">
-        <button class="btn primary" id="copyBtn">Kopioi TOP 3</button>
-        <button class="btn" id="homeBtn">Takaisin alkuun</button>
-      </div>
-
-      <div class="grid" style="grid-template-columns: 1fr; gap: 12px;">
+      <div class="grid" style="grid-template-columns: 1fr; gap: 12px; margin-top: 12px;">
         ${top.map((x, idx) => {
           const matched = usedTags.filter(t => x.car.tags.has(t));
           const tagsHtml = matched.slice(0, 14).map(t => `<span class="tag">${t}</span>`).join("");
@@ -475,7 +328,6 @@
                   <div class="small" style="margin-top:6px;">Miksi: ${x.car.notes}</div>
                   ${hint ? `<div class="small" style="margin-top:6px;"><b>${hint}</b></div>` : ``}
                   ${matched.length ? `<div style="margin-top:8px;">${tagsHtml}</div>` : ``}
-                  <div class="muted" style="margin-top:8px;">Piilonimi: <code>${x.car.code}</code></div>
                 </div>
               </div>
             </div>
@@ -485,27 +337,14 @@
 
       <details>
         <summary>Näytä painotukset (debug)</summary>
-        <p class="muted">Nämä ovat sisäisiä tageja, joilla pisteytys laskettiin.</p>
-        <div>
+        <div style="margin-top:8px;">
           ${Object.entries(state.scores).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<span class="tag">${k}: ${v}</span>`).join("")}
         </div>
       </details>
-
-      <p class="muted" style="margin-top:12px;">
-        Seuraavaksi voidaan lisätä periaatefiltteri lopussa: sulje merkit pois ja näytä seuraavat vaihtoehdot.
-      </p>
     `;
 
-    document.getElementById("copyBtn").onclick = async () => {
-      try { await navigator.clipboard.writeText(copyText); alert("Kopioitu leikepöydälle!"); }
-      catch { alert("Kopiointi ei onnistunut selaimessa. Voit valita ja kopioida käsin."); }
-    };
-    document.getElementById("homeBtn").onclick = gotoHome;
-
-    const backBtn = document.getElementById("backBtn");
-    const restartBtn = document.getElementById("restartBtn");
-    backBtn.disabled = true;
-    restartBtn.onclick = reset;
+    document.getElementById("backBtn").disabled = true;
+    document.getElementById("restartBtn").onclick = reset;
   }
 
   function render(){
