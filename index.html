@@ -88,7 +88,6 @@
     code { background: #0f1725; border: 1px solid #223047; padding: 2px 6px; border-radius: 8px; }
 
     .notice { border:1px dashed #2a3b57; border-radius: 14px; padding: 10px 12px; margin-top: 10px; color:#b7c6dd; }
-    .headerTitle { display:none; } /* pidetään sivu siistinä: logo hoitaa brändin */
   </style>
 </head>
 <body>
@@ -155,104 +154,162 @@
 
   /**
    * Autot mukana testissä.
-   * Tagit ovat heuristiikkaa pisteytykseen (ei lupaus varustetasosta).
+   * Lisätty hintatason tagit:
+   * - price_budget / price_mid / price_premium
    */
   const cars = [
-    { code:"Project Redwood", name:"Tesla Model Y", kind:"suv", tags:new Set(["crossover","family","range_ok","fast_charge","good_infra","tech","tow_capable","popular","known_brand"]), notes:"Suosittu kokonaispaketti. Hyvä arki + reissut. Trimmi (RWD/AWD) ehdotetaan lopussa." },
-    { code:"Project Cedar", name:"Volkswagen ID.4", kind:"suv", tags:new Set(["crossover","family","comfort","practical","tow_capable","popular","known_brand"]), notes:"Perhe-crossover: mukavuus ja käytännöllisyys." },
-    { code:"Project Aurora", name:"Tesla Model 3", kind:"sedan", tags:new Set(["sedan","efficient","range_ok","fast_charge","good_infra","tech","popular","known_brand"]), notes:"Tehokas ja tekninen sedan. Hyvä reissuun ja arkeen." },
-    { code:"Project Atlas", name:"Volkswagen ID.7", kind:"sedan", tags:new Set(["sedan","comfort","range_ok","practical","highway","known_brand"]), notes:"Pitkän matkan fiilis: tilaa ja mukavuutta, sopii moottoritielle." },
-    { code:"Project Pine", name:"Volkswagen ID.3", kind:"hatch", tags:new Set(["hatchback","city","compact","practical","popular","known_brand"]), notes:"Kompakti arkeen/kaupunkiin." },
-    { code:"Project Saffron", name:"Kia EV3", kind:"suv", tags:new Set(["crossover_small","city","practical","tech","value","known_brand"]), notes:"Pienempi crossover: arki + moderni fiilis, usein hyvä hinta/ominaisuudet." },
-    { code:"Project Ruby", name:"Renault 5 E-Tech Electric", kind:"hatch", tags:new Set(["city","compact","hatchback","fun","value","known_brand"]), notes:"Kaupunkikokoluokka ja persoonallinen hatchback-idea." },
-    { code:"Project Fjord", name:"Škoda Elroq", kind:"suv", tags:new Set(["crossover","family","practical","spacey","tow_capable","known_brand"]), notes:"Tilapainotus ja järkevyys. Hyvä perhe/arkisuunta." },
-    { code:"Project Birch", name:"Škoda Enyaq", kind:"suv", tags:new Set(["crossover","family","spacey","comfort","tow_capable","known_brand"]), notes:"Isohko ja tilava. Perhe + tavara + mukavuus." },
-    { code:"Project Quartz", name:"BMW iX1", kind:"suv", tags:new Set(["crossover","premium","tech","comfort","family","tow_capable","known_brand"]), notes:"Premium-painotus ja helppo crossover-kori." },
-    { code:"Project Obsidian", name:"Audi Q6 e-tron", kind:"suv", tags:new Set(["crossover","premium","tech","comfort","fast_charge","tow_capable","known_brand"]), notes:"Premium + moderni tekniikka/lataus -painotus." },
-    { code:"Project Nimbus", name:"Volvo EX30", kind:"suv", tags:new Set(["crossover_small","city","tech","safety","known_brand","popular"]), notes:"Pieni ja moderni: kaupunki + turvallisuus/tekniikka." },
-    { code:"Project Slate", name:"BMW i4", kind:"sedan", tags:new Set(["sedan","premium","fun","highway","range_ok","known_brand"]), notes:"Ajamisen fiilis + premium-sedan." },
-    { code:"Project Citron", name:"Citroën e-C3", kind:"hatch", tags:new Set(["city","budget","compact","simple","value","known_brand"]), notes:"Budjetti + kaupunki. Simppeli ja järkevä perusratkaisu." },
-    { code:"Project Ember", name:"Cupra Born", kind:"hatch", tags:new Set(["hatchback","fun","compact","tech","known_brand","niche"]), notes:"Sporttisempi fiilis kompaktissa koossa." },
-    { code:"Project Lumen", name:"Audi Q4 e-tron", kind:"suv", tags:new Set(["crossover","premium","comfort","family","tow_capable","known_brand"]), notes:"Premium-crossover arkeen: mukavuus ja yleiskäyttö." },
-    { code:"Project Polar", name:"Mercedes EQA", kind:"suv", tags:new Set(["crossover_small","premium","comfort","tech","known_brand"]), notes:"Premium-kompakti crossover: mukavuus ja hiljaisuus edellä." },
-    { code:"Project Meadow", name:"Renault Scenic E-Tech Electric", kind:"suv", tags:new Set(["family","spacey","practical","comfort","tow_capable","known_brand"]), notes:"Perhe- ja tilapainotus. Arkikäyttö + tavara." },
-    { code:"Project Pebble", name:"Dacia Spring", kind:"hatch", tags:new Set(["city","budget","simple","compact","value","known_brand"]), notes:"Minimi-budjetti ja kaupunki. Ei reissupainotteiseen käyttöön." },
-    { code:"Project Granite", name:"Ford Explorer (Electric)", kind:"suv", tags:new Set(["crossover","family","practical","comfort","tow_capable","known_brand"]), notes:"Perhe-crossover painotus. Helppo yleiskäyttö." },
-    { code:"Project Silverline",  name:"Mercedes-Benz CLA Electric",  kind:"sedan",  tags:new Set(["sedan","premium","tech","highway","range_ok","known_brand","price_premium"]),
-  notes:"Premium-sedan painotus: brändi, mukavuus/tekniikka ja moottoritieajon fiilis."
-},
+    { code:"Project Redwood", name:"Tesla Model Y", kind:"suv",
+      tags:new Set(["crossover","family","range_ok","fast_charge","good_infra","tech","tow_capable","popular","known_brand","price_mid"]),
+      notes:"Suosittu kokonaispaketti. Hyvä arki + reissut. Trimmi (RWD/AWD) ehdotetaan lopussa." },
+    { code:"Project Cedar", name:"Volkswagen ID.4", kind:"suv",
+      tags:new Set(["crossover","family","comfort","practical","tow_capable","popular","known_brand","price_mid"]),
+      notes:"Perhe-crossover: mukavuus ja käytännöllisyys." },
+    { code:"Project Aurora", name:"Tesla Model 3", kind:"sedan",
+      tags:new Set(["sedan","efficient","range_ok","fast_charge","good_infra","tech","popular","known_brand","price_mid"]),
+      notes:"Tehokas ja tekninen sedan. Hyvä reissuun ja arkeen." },
 
+    { code:"Project Silverline", name:"Mercedes-Benz CLA Electric", kind:"sedan",
+      tags:new Set(["sedan","premium","tech","highway","range_ok","known_brand","price_premium"]),
+      notes:"Premium-sedan painotus: brändi, mukavuus/tekniikka ja moottoritieajon fiilis." },
+
+    { code:"Project Atlas", name:"Volkswagen ID.7", kind:"sedan",
+      tags:new Set(["sedan","comfort","range_ok","practical","highway","known_brand","price_premium"]),
+      notes:"Pitkän matkan fiilis: tilaa ja mukavuutta, sopii moottoritielle." },
+    { code:"Project Pine", name:"Volkswagen ID.3", kind:"hatch",
+      tags:new Set(["hatchback","city","compact","practical","popular","known_brand","price_mid"]),
+      notes:"Kompakti arkeen/kaupunkiin." },
+    { code:"Project Saffron", name:"Kia EV3", kind:"suv",
+      tags:new Set(["crossover_small","city","practical","tech","value","known_brand","price_mid"]),
+      notes:"Pienempi crossover: arki + moderni fiilis, usein hyvä hinta/ominaisuudet." },
+    { code:"Project Ruby", name:"Renault 5 E-Tech Electric", kind:"hatch",
+      tags:new Set(["city","compact","hatchback","fun","value","known_brand","price_mid"]),
+      notes:"Kaupunkikokoluokka ja persoonallinen hatchback-idea." },
+    { code:"Project Fjord", name:"Škoda Elroq", kind:"suv",
+      tags:new Set(["crossover","family","practical","spacey","tow_capable","known_brand","price_mid"]),
+      notes:"Tilapainotus ja järkevyys. Hyvä perhe/arkisuunta." },
+    { code:"Project Birch", name:"Škoda Enyaq", kind:"suv",
+      tags:new Set(["crossover","family","spacey","comfort","tow_capable","known_brand","price_mid"]),
+      notes:"Isohko ja tilava. Perhe + tavara + mukavuus." },
+    { code:"Project Quartz", name:"BMW iX1", kind:"suv",
+      tags:new Set(["crossover","premium","tech","comfort","family","tow_capable","known_brand","price_premium"]),
+      notes:"Premium-painotus ja helppo crossover-kori." },
+    { code:"Project Obsidian", name:"Audi Q6 e-tron", kind:"suv",
+      tags:new Set(["crossover","premium","tech","comfort","fast_charge","tow_capable","known_brand","price_premium"]),
+      notes:"Premium + moderni tekniikka/lataus -painotus." },
+    { code:"Project Nimbus", name:"Volvo EX30", kind:"suv",
+      tags:new Set(["crossover_small","city","tech","safety","known_brand","popular","price_mid"]),
+      notes:"Pieni ja moderni: kaupunki + turvallisuus/tekniikka." },
+    { code:"Project Slate", name:"BMW i4", kind:"sedan",
+      tags:new Set(["sedan","premium","fun","highway","range_ok","known_brand","price_premium"]),
+      notes:"Ajamisen fiilis + premium-sedan." },
+    { code:"Project Citron", name:"Citroën e-C3", kind:"hatch",
+      tags:new Set(["city","budget","compact","simple","value","known_brand","price_budget"]),
+      notes:"Budjetti + kaupunki. Simppeli ja järkevä perusratkaisu." },
+    { code:"Project Ember", name:"Cupra Born", kind:"hatch",
+      tags:new Set(["hatchback","fun","compact","tech","known_brand","niche","price_mid"]),
+      notes:"Sporttisempi fiilis kompaktissa koossa." },
+    { code:"Project Lumen", name:"Audi Q4 e-tron", kind:"suv",
+      tags:new Set(["crossover","premium","comfort","family","tow_capable","known_brand","price_premium"]),
+      notes:"Premium-crossover arkeen: mukavuus ja yleiskäyttö." },
+    { code:"Project Polar", name:"Mercedes EQA", kind:"suv",
+      tags:new Set(["crossover_small","premium","comfort","tech","known_brand","price_premium"]),
+      notes:"Premium-kompakti crossover: mukavuus ja hiljaisuus edellä." },
+    { code:"Project Meadow", name:"Renault Scenic E-Tech Electric", kind:"suv",
+      tags:new Set(["family","spacey","practical","comfort","tow_capable","known_brand","price_mid"]),
+      notes:"Perhe- ja tilapainotus. Arkikäyttö + tavara." },
+    { code:"Project Pebble", name:"Dacia Spring", kind:"hatch",
+      tags:new Set(["city","budget","simple","compact","value","known_brand","price_budget"]),
+      notes:"Minimi-budjetti ja kaupunki. Ei reissupainotteiseen käyttöön." },
+    { code:"Project Granite", name:"Ford Explorer (Electric)", kind:"suv",
+      tags:new Set(["crossover","family","practical","comfort","tow_capable","known_brand","price_mid"]),
+      notes:"Perhe-crossover painotus. Helppo yleiskäyttö." },
   ];
 
-  /* Kysymykset – mukana myös turvallisuus, kulutus, huoltokustannus, saatavuus, yleisyys, tunnettu brändi */
+  /* Kysymykset – lisätty budjettikysymykset (maksimi + jousto) */
   const questions = [
-    { q:"1) Pääasiallinen käyttö?", opts:[
+    { q:"Pääasiallinen käyttö?", opts:[
       { t:"Kaupunki/lyhyet matkat", add:{ city:4, compact:2, budget:1, easy:1 } },
       { t:"Sekalaista arkea + satunnaiset reissut", add:{ practical:3, comfort:2, range_ok:1 } },
       { t:"Paljon pitkiä matkoja", add:{ highway:3, range_ok:3, fast_charge:3, good_infra:2 } },
     ]},
-    { q:"2) Tila ja korimalli?", opts:[
+    { q:"Tila ja korimalli?", opts:[
       { t:"Kompakti (helpompi parkki/ketteryys)", add:{ compact:4, city:2, crossover_small:1, hatchback:1 } },
       { t:"Normaali koko", add:{ practical:2, comfort:1 } },
       { t:"Perhe + paljon tavaraa", add:{ family:5, spacey:5, tow_capable:1 } },
     ]},
-    { q:"3) Mikä on sinulle tärkein fiilis?", opts:[
+    { q:"Mikä on sinulle tärkein fiilis?", opts:[
       { t:"Mahdollisimman edullinen & helppo", add:{ budget:5, simple:2, value:2 } },
       { t:"Paras hinta/laatu", add:{ value:4, practical:2, efficient:1 } },
       { t:"Premium/mukavuus", add:{ premium:4, comfort:3, tech:1 } },
       { t:"Sporttinen ajotuntuma", add:{ fun:5, tech:1 } },
     ]},
-    { q:"4) Latausreissuissa tärkeintä?", opts:[
+
+    { q:"Paljonko auton ostohinta saa olla maksimissaan?", opts:[
+      { t:"Alle 30 000 €", add:{ price_budget: 8, price_mid: 1, price_premium: -10 } },
+      { t:"30 000 – 40 000 €", add:{ price_budget: 5, price_mid: 4, price_premium: -8 } },
+      { t:"40 000 – 55 000 €", add:{ price_budget: 2, price_mid: 7, price_premium: -4 } },
+      { t:"55 000 – 70 000 €", add:{ price_mid: 5, price_premium: 4 } },
+      { t:"Yli 70 000 €", add:{ price_premium: 8 } },
+    ]},
+
+    { q:"Kuinka paljon olisit valmis joustamaan budjetissa, jotta saat haluamasi varusteet?", opts:[
+      { t:"En jousta käytännössä lainkaan", add:{ budget_strict: 4, price_premium: -2 } },
+      { t:"Voin joustaa vähän (noin 5%)", add:{ budget_flex: 2 } },
+      { t:"Voin joustaa selvästi (noin 10–15%)", add:{ budget_flex: 4, price_premium: 2 } },
+      { t:"Voin joustaa paljon (noin 20%+)", add:{ budget_flex: 6, price_premium: 4 } },
+    ]},
+
+    { q:"Latausreissuissa tärkeintä?", opts:[
       { t:"En juuri reissaa → perus riittää", add:{ city:1, simple:1 } },
       { t:"Haluan nopean pikalatauksen", add:{ fast_charge:5 } },
       { t:"Haluan maksimaalisen helppouden (verkosto/softa)", add:{ good_infra:5, tech:2, easy:2 } },
     ]},
-    { q:"5) Kulutus/tehokkuus (km/kWh) – kuinka tärkeää?", opts:[
+    { q:"Kulutus/tehokkuus (km/kWh) – kuinka tärkeää?", opts:[
       { t:"Ei juuri väliä", add:{ comfort:1 } },
       { t:"Tärkeä", add:{ efficient:3, value:1 } },
       { t:"Erittäin tärkeä (haluan maksimoida tehokkuuden)", add:{ efficient:5, value:2 } },
     ]},
-    { q:"6) Turvallisuus – kuinka paljon painotat?", opts:[
+    { q:"Turvallisuus – kuinka paljon painotat?", opts:[
       { t:"Perus riittää", add:{} },
       { t:"Tärkeä (avustimet, hyvät valot, aktiivinen turvallisuus)", add:{ safety:3, tech:1 } },
       { t:"Erittäin tärkeä (maksimipaino turvallisuudelle)", add:{ safety:5, premium:1 } },
     ]},
-    { q:"7) Huoltokustannukset & helppo omistaa – miten tärkeää?", opts:[
+    { q:"Huoltokustannukset & helppo omistaa – miten tärkeää?", opts:[
       { t:"En mieti tätä paljoa", add:{} },
       { t:"Tärkeä", add:{ ownership_easy:3, value:1 } },
       { t:"Erittäin tärkeä (haluan minimoida yllätykset)", add:{ ownership_easy:5, simple:1, value:2 } },
     ]},
-    { q:"8) Voimansiirto?", opts:[
+    { q:"Voimansiirto?", opts:[
       { t:"Takaveto käy", add:{ pref_rwd:3 } },
       { t:"Neliveto on tärkeä", add:{ pref_awd:4, snow:2 } },
       { t:"Ei väliä", add:{ practical:1 } },
     ]},
-    { q:"9) Vetokoukku / peräkärry / pyöräteline?", opts:[
+    { q:"Vetokoukku / peräkärry / pyöräteline?", opts:[
       { t:"En tarvitse", add:{} },
       { t:"Olisi kiva", add:{ tow_capable:2, family:1 } },
       { t:"Tarvitsen (käytännössä pakollinen)", add:{ tow_capable:6, family:2, crossover:1 } },
     ]},
-    { q:"10) Matrix-valot?", opts:[
+    { q:"Matrix-valot?", opts:[
       { t:"Ei väliä", add:{} },
       { t:"Olisi kiva", add:{ tech:1, premium:1 } },
       { t:"Haluan mielellään (pimeä maantie-ajo)", add:{ tech:3, premium:2, highway:1 } },
     ]},
-    { q:"11) Auton yleisyys liikenteessä?", opts:[
+    { q:"Auton yleisyys liikenteessä?", opts:[
       { t:"Ei haittaa vaikka samaa on monella", add:{ popular:2 } },
       { t:"Mieluummin jotain vähän harvinaisempaa", add:{ niche:3 } },
       { t:"Haluan selvästi erottuvan/harvinaisen", add:{ niche:5 } },
     ]},
-    { q:"12) Pitääkö merkin olla tunnettu ja varma valinta?", opts:[
+    { q:"Pitääkö merkin olla tunnettu ja varma valinta?", opts:[
       { t:"Ei väliä – ominaisuudet ratkaisee", add:{} },
       { t:"Jonkin verran – mieluummin tunnettu", add:{ known_brand:2 } },
       { t:"Erittäin tärkeä – haluan tunnetun merkin", add:{ known_brand:5 } },
     ]},
-    { q:"13) Autonomisuus tulevaisuudessa (edistyneet avustimet / kasvava automaatio)?", opts:[
+    { q:"Autonomisuus tulevaisuudessa (edistyneet avustimet / kasvava automaatio)?", opts:[
       { t:"Ei kiinnosta", add:{} },
       { t:"Perus adaptiivinen/muut avustimet riittää", add:{ safety:1, comfort:1 } },
       { t:"Haluan että auto on vahvasti tech-painotteinen", add:{ tech:5, good_infra:2, premium:1 } },
     ]},
-    { q:"14) Saatavuus – kuinka nopeasti auton pitäisi olla käytössä?", opts:[
+    { q:"Saatavuus – kuinka nopeasti auton pitäisi olla käytössä?", opts:[
       { t:"Ei kiire", add:{} },
       { t:"Mieluiten pian (viikkoja, ei kuukausia)", add:{ availability:3 } },
       { t:"Mahdollisimman nopeasti (varasto/yleinen malli)", add:{ availability:5, popular:1 } },
@@ -317,7 +374,7 @@
       </div>
 
       <div class="notice">
-        <b>Vinkki:</b> Tämä on brändisokea testi. 
+        <b>Vinkki:</b> Tämä on brändisokea testi. Halutessasi voidaan lisätä lopussa periaatefiltteri (sulje merkit pois vasta reveal-vaiheessa ja näytä seuraavat vaihtoehdot).
       </div>
 
       <details id="carsDetails">
