@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="fi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sokea sähköauto-kysely</title>
+  <style>
+    :root { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    body { margin: 0; background: #0b0f14; color: #e8eef7; }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 24px; }
+    .card { background: #111826; border: 1px solid #223047; border-radius: 18px; padding: 18px; box-shadow: 0 8px 30px rgba(0,0,0,.25); }
+    h1 { font-size: 22px; margin: 0 0 6px; }
+    h2 { margin: 0; font-size: 18px; }
+    p { margin: 8px 0; color: #b7c6dd; line-height: 1.45; }
+    .muted { color: #9bb0cc; font-size: 13px; }
+    .progress { height: 10px; background: #0f1725; border: 1px solid #223047; border-radius: 999px; overflow: hidden; margin: 14px 0 18px; }
+    .bar { height: 100%; width: 0%; background: #4f8cff; transition: width .25s ease; }
+    .q { font-size: 18px; margin: 0 0 10px; }
+    .opts { display: grid; gap: 10px; margin-top: 10px; }
+    button.opt {
+      text-align: left; padding: 12px 12px; border-radius: 14px;
+      border: 1px solid #2a3b57; background: #0f1725; color: #e8eef7;
+      cursor: pointer; transition: transform .03s ease, border-color .15s ease, background .15s ease;
+    }
+    button.opt:hover { border-color: #4f8cff; }
+    button.opt.selected { border-color: #4f8cff; background: #0c1524; }
+    button.opt:active { transform: scale(0.99); }
+    .row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+    .btn {
+      padding: 10px 12px; border-radius: 12px; border: 1px solid #2a3b57;
+      background: #0f1725; color: #e8eef7; cursor: pointer;
+    }
+    .btn.primary { background: #4f8cff; border-color: #4f8cff; color: #0b0f14; font-weight: 650; }
+    .btn:disabled { opacity: .5; cursor: not-allowed; }
+    .tag { display:inline-block; padding: 4px 8px; border: 1px solid #2a3b57; border-radius: 999px; font-size: 12px; color:#b7c6dd; margin: 4px 6px 0 0; }
+    .pill { font-size: 12px; padding: 4px 8px; border-radius: 999px; background: #111826; border: 1px solid #223047; color: #b7c6dd; }
+    .small { font-size: 13px; color: #b7c6dd; }
+    .footer { margin-top: 14px; display:flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+
+    .grid { display:grid; gap:12px; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 12px; }
+    @media (max-width: 920px){ .grid{ grid-template-columns: repeat(2, minmax(0,1fr)); } }
+    @media (max-width: 560px){ .grid{ grid-template-columns: 1fr; } }
+    .car { border: 1px solid #223047; background:#0f1725; border-radius: 16px; overflow:hidden; }
+    .carTop { display:flex; gap:10px; padding: 12px; align-items:center; }
+    .thumb {
+      width: 66px; height: 48px; border-radius: 12px;
+      border: 1px solid #223047; background: radial-gradient(circle at 30% 30%, #1b2a44, #0b0f14);
+      display:flex; align-items:center; justify-content:center;
+      flex: 0 0 auto;
+    }
+    .thumb svg { width: 48px; height: 32px; opacity: .9; }
+    .carName { font-weight: 700; color:#e8eef7; }
+    .carMeta { font-size: 12px; color:#9bb0cc; margin-top: 2px; }
+    details { border:1px solid #223047; background:#0f1725; border-radius: 14px; padding: 12px; margin-top: 12px; }
+    summary { cursor:pointer; font-weight: 650; color:#e8eef7; }
+    a { color: #84b3ff; }
+    code { background: #0f1725; border: 1px solid #223047; padding: 2px 6px; border-radius: 8px; }
+    .notice { border:1px dashed #2a3b57; border-radius: 14px; padding: 10px 12px; margin-top: 10px; color:#b7c6dd; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card" id="app">
+      <h1>🔒 Sokea sähköauto-kysely</h1>
+      <p>Vastaa ominaisuuksiin ja tarpeisiin. <b>Merkki ja malli paljastuu vasta lopussa.</b></p>
+      <p class="muted">Huom: Varusteet (koukku, matrix, avustimet) vaihtelevat varustelun/markkinan mukaan — tässä ne ovat mieltymyksiä, eivät “kovia totuuksia”.</p>
+
+      <div class="progress" aria-label="Edistyminen"><div class="bar" id="bar"></div></div>
+      <div id="screen"></div>
+
+      <div class="footer">
+        <button class="btn" id="backBtn">← Takaisin</button>
+        <button class="btn" id="restartBtn">Aloita alusta</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+/* --- Pienet “kuvat” (inline SVG) --- */
+function carSvg(kind){
+  // kind: "suv", "sedan", "hatch"
+  const body = (kind==="sedan")
+    ? "M6 18h5l5-6h16l6 6h4"
+    : (kind==="hatch")
+      ? "M6 18h6l4-6h14l7 6h5"
+      : "M5 18h7l4-6h18l6 6h5";
+  return `
+  <svg viewBox="0 0 64 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="${body}" stroke="#B7C6DD" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M9 18v6h46v-6" stroke="#B7C6DD" stroke-width="2.5" stroke-linecap="round"/>
+    <circle cx="18" cy="26" r="4" stroke="#B7C6DD" stroke-width="2.5"/>
+    <circle cx="46" cy="26" r="4" stroke="#B7C6DD" stroke-width="2.5"/>
+    <path d="M24 12h10" stroke="#B7C6DD" stroke-width="2.5" stroke-linecap="round"/>
+  </svg>`;
+}
+
+/**
+ * Autot mukana testissä.
+ * Tagit ovat “heuristiikkaa” pisteytykseen (ei lupaus varustetasosta).
+ */
+const cars = [
+  { code:"Project Redwood", name:"Tesla Model Y", kind:"suv", tags:new Set(["crossover","family","range_ok","fast_charge","good_infra","tech","tow_capable","popular","known_brand"]), notes:"Suosittu kokonaispaketti. Hyvä arki + reissut. Trimmi (RWD/AWD) ehdotetaan lopussa." },
+  { code:"Project Cedar", name:"Volkswagen ID.4", kind:"suv", tags:new Set(["crossover","family","comfort","practical","tow_capable","popular","known_brand"]), notes:"Perhe-crossover: mukavuus ja käytännöllisyys." },
+  { code:"Project Aurora", name:"Tesla Model 3", kind:"sedan", tags:new Set(["sedan","efficient","range_ok","fast_charge","good_infra","tech","popular","known_brand"]), notes:"Tehokas ja tekninen sedan. Hyvä reissuun ja arkeen." },
+  { code:"Project Atlas", name:"Volkswagen ID.7", kind:"sedan", tags:new Set(["sedan","comfort","range_ok","practical","highway","known_brand"]), notes:"Pitkän matkan fiilis: tilaa ja mukavuutta, sopii moottoritielle." },
+  { code:"Project Pine", name:"Volkswagen ID.3", kind:"hatch", tags:new Set(["hatchback","city","compact","practical","popular","known_brand"]), notes:"Kompakti arkeen/kaupunkiin." },
+  { code:"Project Saffron", name:"Kia EV3", kind:"suv", tags:new Set(["crossover_small","city","practical","tech","value","known_brand"]), notes:"Pienempi crossover: arki + moderni fiilis, usein hyvä hinta/ominaisuudet." },
+  { code:"Project Ruby", name:"Renault 5 E-Tech Electric", kind:"hatch", tags:new Set(["city","compact","hatchback","fun","value","known_brand"]), notes:"Kaupunkikokoluokka ja persoonallinen hatchback-idea." },
+  { code:"Project Fjord", name:"Škoda Elroq", kind:"suv", tags:new Set(["crossover","family","practical","spacey","tow_capable","known_brand"]), notes:"Tilapainotus ja järkevyys. Hyvä perhe/arkisuunta." },
+  { code:"Project Birch", name:"Škoda Enyaq", kind:"suv", tags:new Set(["crossover","family","spacey","comfort","tow_capable","known_brand"]), notes:"Isohko ja tilava. Perhe + tavara + mukavuus." },
+  { code:"Project Quartz", name:"BMW iX1", kind:"suv", tags:new Set(["crossover","premium","tech","comfort","family","tow_capable","known_brand"]), notes:"Premium-painotus ja helppo crossover-kori." },
+  { code:"Project Obsidian", name:"Audi Q6 e-tron", kind:"suv", tags:new Set(["crossover","premium","tech","comfort","fast_charge","tow_capable","known_brand"]), notes:"Premium + moderni tekniikka/lataus -painotus." },
+  { code:"Project Nimbus", name:"Volvo EX30", kind:"suv", tags:new Set(["crossover_small","city","tech","safety","known_brand","popular"]), notes:"Pieni ja moderni: kaupunki + turvallisuus/tekniikka." },
+  { code:"Project Slate", name:"BMW i4", kind:"sedan", tags:new Set(["sedan","premium","fun","highway","range_ok","known_brand"]), notes:"Ajamisen fiilis + premium-sedan." },
+  { code:"Project Citron", name:"Citroën e-C3", kind:"hatch", tags:new Set(["city","budget","compact","simple","value","known_brand"]), notes:"Budjetti + kaupunki. Simppeli ja järkevä perusratkaisu." },
+  { code:"Project Ember", name:"Cupra Born", kind:"hatch", tags:new Set(["hatchback","fun","compact","tech","known_brand","niche"]), notes:"Sporttisempi fiilis kompaktissa koossa." },
+  { code:"Project Lumen", name:"Audi Q4 e-tron", kind:"suv", tags:new Set(["crossover","premium","comfort","family","tow_capable","known_brand"]), notes:"Premium-crossover arkeen: mukavuus ja yleiskäyttö." },
+  { code:"Project Polar", name:"Mercedes EQA", kind:"suv", tags:new Set(["crossover_small","premium","comfort","tech","known_brand"]), notes:"Premium-kompakti crossover: mukavuus ja hiljaisuus edellä." },
+  { code:"Project Meadow", name:"Renault Scenic E-Tech Electric", kind:"suv", tags:new Set(["family","spacey","practical","comfort","tow_capable","known_brand"]), notes:"Perhe- ja tilapainotus. Arkikäyttö + tavara." },
+  { code:"Project Pebble", name:"Dacia Spring", kind:"hatch", tags:new Set(["city","budget","simple","compact","value","known_brand"]), notes:"Minimi-budjetti ja kaupunki. Ei reissupainotteiseen käyttöön." },
+  { code:"Project Granite", name:"Ford Explorer (Electric)", kind:"suv", tags:new Set(["crossover","family","practical","comfort","tow_capable","known_brand"]), notes:"Perhe-crossover painotus. Helppo yleiskäyttö." },
+];
+
+/* Kysymykset – nyt mukana myös turvallisuus, kulutus, huoltokustannus, saatavuus, yleisyys, tunnettu brändi */
+const questions = [
+  { q:"1) Pääasiallinen käyttö?", opts:[
+    { t:"Kaupunki/lyhyet matkat", add:{ city:4, compact:2, budget:1, easy:1 } },
+    { t:"Sekalaista arkea + satunnaiset reissut", add:{ practical:3, comfort:2, range_ok:1 } },
+    { t:"Paljon pitkiä matkoja", add:{ highway:3, range_ok:3, fast_charge:3, good_infra:2 } },
+  ]},
+  { q:"2) Tila ja korimalli?", opts:[
+    { t:"Kompakti (helpompi parkki/ketteryys)", add:{ compact:4, city:2, crossover_small:1, hatchback:1 } },
+    { t:"Normaali koko", add:{ practical:2, comfort:1 } },
+    { t:"Perhe + paljon tavaraa", add:{ family:5, spacey:5, tow_capable:1 } },
+  ]},
+  { q:"3) Mikä on sinulle tärkein fiilis?", opts:[
+    { t:"Mahdollisimman edullinen & helppo", add:{ budget:5, simple:2, value:2 } },
+    { t:"Paras hinta/laatu", add:{ value:4, practical:2, efficient:1 } },
+    { t:"Premium/mukavuus", add:{ premium:4, comfort:3, tech:1 } },
+    { t:"Sporttinen ajotuntuma", add:{ fun:5, tech:1 } },
+  ]},
+  { q:"4) Latausreissuissa tärkeintä?", opts:[
+    { t:"En juuri reissaa → perus riittää", add:{ city:1, simple:1 } },
+    { t:"Haluan nopean pikalatauksen", add:{ fast_charge:5 } },
+    { t:"Haluan maksimaalisen helppouden (verkosto/softa)", add:{ good_infra:5, tech:2, easy:2 } },
+  ]},
+  { q:"5) Kulutus/tehokkuus (km/kWh) – kuinka tärkeää?", opts:[
+    { t:"Ei juuri väliä", add:{ comfort:1 } },
+    { t:"Tärkeä", add:{ efficient:3, value:1 } },
+    { t:"Erittäin tärkeä (haluan maksimoida tehokkuuden)", add:{ efficient:5, value:2 } },
+  ]},
+  { q:"6) Turvallisuus – kuinka paljon painotat?", opts:[
+    { t:"Perus riittää", add:{} },
+    { t:"Tärkeä (avustimet, hyvät valot, aktiivinen turvallisuus)", add:{ safety:3, tech:1 } },
+    { t:"Erittäin tärkeä (maksimipaino turvallisuudelle)", add:{ safety:5, premium:1 } },
+  ]},
+  { q:"7) Huoltokustannukset & “helppo omistaa” – miten tärkeää?", opts:[
+    { t:"En mieti tätä paljoa", add:{} },
+    { t:"Tärkeä", add:{ ownership_easy:3, value:1 } },
+    { t:"Erittäin tärkeä (haluan minimoida yllätykset)", add:{ ownership_easy:5, simple:1, value:2 } },
+  ]},
+  { q:"8) Voimansiirto?", opts:[
+    { t:"Takaveto käy", add:{ pref_rwd:3 } },
+    { t:"Neliveto on tärkeä", add:{ pref_awd:4, snow:2 } },
+    { t:"Ei väliä", add:{ practical:1 } },
+  ]},
+  { q:"9) Vetokoukku / peräkärry / pyöräteline?", opts:[
+    { t:"En tarvitse", add:{} },
+    { t:"Olisi kiva", add:{ tow_capable:2, family:1 } },
+    { t:"Tarvitsen (käytännössä pakollinen)", add:{ tow_capable:6, family:2, crossover:1 } },
+  ]},
+  { q:"10) Matrix-valot?", opts:[
+    { t:"Ei väliä", add:{} },
+    { t:"Olisi kiva", add:{ tech:1, premium:1 } },
+    { t:"Haluan mielellään (pimeä maantie-ajo)", add:{ tech:3, premium:2, highway:1 } },
+  ]},
+  { q:"11) Auton yleisyys liikenteessä?", opts:[
+    { t:"Ei haittaa vaikka samaa on monella", add:{ popular:2 } },
+    { t:"Mieluummin jotain vähän harvinaisempaa", add:{ niche:3 } },
+    { t:"Haluan selvästi erottuvan/harvinaisen", add:{ niche:5 } },
+  ]},
+  { q:"12) Pitääkö merkin olla tunnettu ja “varma valinta”?", opts:[
+    { t:"Ei väliä – ominaisuudet ratkaisee", add:{} },
+    { t:"Jonkin verran – mieluummin tunnettu", add:{ known_brand:2 } },
+    { t:"Erittäin tärkeä – haluan tunnetun merkin", add:{ known_brand:5 } },
+  ]},
+  { q:"13) Autonomisuus tulevaisuudessa (edistyneet avustimet / kasvava automaatio)?", opts:[
+    { t:"Ei kiinnosta", add:{} },
+    { t:"Perus adaptiivinen/muut avustimet riittää", add:{ safety:1, comfort:1 } },
+    { t:"Haluan että auto on vahvasti tech-painotteinen", add:{ tech:5, good_infra:2, premium:1 } },
+  ]},
+  { q:"14) Saatavuus – kuinka nopeasti auton pitäisi olla käytössä?", opts:[
+    { t:"Ei kiire", add:{} },
+    { t:"Mieluiten pian (viikkoja, ei kuukausia)", add:{ availability:3 } },
+    { t:"Mahdollisimman nopeasti (varasto/yleinen malli)", add:{ availability:5, popular:1 } },
+  ]},
+];
+
+const state = { i: 0, answers: Array(questions.length).fill(null), scores: {}, view: "home" };
+
+function addScores(add) {
+  for (const [k,v] of Object.entries(add)) state.scores[k] = (state.scores[k] || 0) + v;
+}
+function recomputeScores() {
+  state.scores = {};
+  for (let qi=0; qi<questions.length; qi++){
+    const ai = state.answers[qi];
+    if (ai === null) continue;
+    addScores(questions[qi].opts[ai].add);
+  }
+}
+function carScore(car) {
+  let total = 0;
+  for (const [k,v] of Object.entries(state.scores)) {
+    if (car.tags.has(k)) total += v;
+  }
+  return total;
+}
+
+function trimHint(model) {
+  const prefAwd = (state.scores.pref_awd || 0) >= 4;
+  const sporty  = (state.scores.fun || 0) >= 5;
+  const highway = (state.scores.highway || 0) >= 3;
+  if (model === "Tesla Model Y" || model === "Tesla Model 3") {
+    if (prefAwd) return sporty ? "Trimmi-idea: Performance (jos saatavilla) tai Long Range AWD." : "Trimmi-idea: Long Range AWD.";
+    return highway ? "Trimmi-idea: Long Range (reissu) tai RWD jos hinta tärkein." : "Trimmi-idea: RWD (hinta/tehokkuus).";
+  }
+  return "";
+}
+
+function gotoHome(){ state.view="home"; render(); }
+function startQuiz(){ state.view="quiz"; state.i=0; render(); }
+function reset(){ state.view="home"; state.i=0; state.answers=Array(questions.length).fill(null); state.scores={}; render(); }
+function gotoResults(){ state.view="results"; render(); }
+
+function renderHome(screen){
+  const carCards = cars.map(c => `
+    <div class="car">
+      <div class="carTop">
+        <div class="thumb">${carSvg(c.kind)}</div>
+        <div>
+          <div class="carName">${c.name}</div>
+          <div class="carMeta">Mukana testissä • piilonimi: <span class="pill">${c.code}</span></div>
+        </div>
+      </div>
+    </div>
+  `).join("");
+
+  screen.innerHTML = `
+    <h2>Valitse ensin</h2>
+    <div class="row" style="margin-top:10px;">
+      <button class="btn primary" id="startBtn">Aloita kysely →</button>
+      <button class="btn" id="listBtn">Näytä mukana olevat autot</button>
+    </div>
+
+    <div class="notice">
+      <b>Vinkki:</b> Tämä on “brändisokea” testi. Jos haluat, voidaan lisätä lopussa “periaatefiltteri” (sulje merkit pois vasta reveal-vaiheessa ja näytä seuraavat vaihtoehdot).
+    </div>
+
+    <details id="carsDetails">
+      <summary>Autot mukana (${cars.length} kpl)</summary>
+      <p class="muted">Tässä näkyy kaikki autot, jotka ovat mukana pisteytyksessä. Kyselyn aikana nimiä ei näytetä.</p>
+      <div class="grid">${carCards}</div>
+    </details>
+  `;
+
+  document.getElementById("startBtn").onclick = startQuiz;
+  document.getElementById("listBtn").onclick = () => {
+    const d = document.getElementById("carsDetails");
+    d.open = true;
+    d.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+}
+
+function renderQuiz(screen, bar){
+  const backBtn = document.getElementById("backBtn");
+  const restartBtn = document.getElementById("restartBtn");
+
+  const progress = Math.round((state.i / questions.length) * 100);
+  bar.style.width = `${progress}%`;
+
+  backBtn.disabled = state.i === 0;
+  backBtn.onclick = () => { if (state.i > 0) { state.i--; render(); } };
+  restartBtn.onclick = reset;
+
+  if (state.i >= questions.length) { gotoResults(); return; }
+
+  const q = questions[state.i];
+  const chosen = state.answers[state.i];
+
+  screen.innerHTML = `
+    <p class="muted">Kysymys ${state.i + 1} / ${questions.length}</p>
+    <div class="q">${q.q}</div>
+    <div class="opts" id="opts"></div>
+    <div class="row">
+      <button class="btn primary" id="nextBtn" ${chosen === null ? "disabled" : ""}>Seuraava →</button>
+    </div>
+  `;
+
+  const optsDiv = document.getElementById("opts");
+  q.opts.forEach((o, idx) => {
+    const btn = document.createElement("button");
+    btn.className = "opt" + (chosen === idx ? " selected" : "");
+    btn.textContent = o.t;
+    btn.onclick = () => { state.answers[state.i] = idx; render(); };
+    optsDiv.appendChild(btn);
+  });
+
+  document.getElementById("nextBtn").onclick = () => {
+    if (state.answers[state.i] === null) return;
+    state.i++;
+    render();
+  };
+}
+
+function renderResults(screen, bar){
+  recomputeScores();
+  bar.style.width = `100%`;
+
+  const ranked = cars
+    .map(c => ({ car: c, pts: carScore(c) }))
+    .sort((a,b) => b.pts - a.pts);
+
+  const top = ranked.slice(0, 5);
+  const usedTags = Object.keys(state.scores).filter(k => (state.scores[k] || 0) > 0);
+
+  const copyText =
+    top.slice(0,3).map((x,i)=>`#${i+1} ${x.car.name} (${x.pts}p)`).join("\n") +
+    `\n\nTesti: sokea sähköauto-kysely`;
+
+  screen.innerHTML = `
+    <p class="muted">Edistyminen: 100%</p>
+    <h2 style="margin:0 0 8px;">✅ Valmis! Nyt paljastetaan suositus</h2>
+    <p class="small">Alla TOP 5. Ensimmäinen on “osuvin” pisteytyksen mukaan.</p>
+
+    <div style="display:flex; gap:10px; flex-wrap:wrap; margin: 10px 0;">
+      <button class="btn primary" id="copyBtn">Kopioi TOP 3</button>
+      <button class="btn" id="homeBtn">Takaisin alkuun</button>
+    </div>
+
+    <div class="grid" style="grid-template-columns: 1fr; gap: 12px;">
+      ${top.map((x, idx) => {
+        const matched = usedTags.filter(t => x.car.tags.has(t));
+        const tagsHtml = matched.slice(0, 14).map(t => `<span class="tag">${t}</span>`).join("");
+        const hint = trimHint(x.car.name);
+        return `
+          <div class="car">
+            <div class="carTop">
+              <div class="thumb">${carSvg(x.car.kind)}</div>
+              <div style="flex:1;">
+                <div style="display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; align-items:center;">
+                  <div class="carName">#${idx+1}: ${x.car.name}</div>
+                  <span class="pill">pisteet: ${x.pts}</span>
+                </div>
+                <div class="small" style="margin-top:6px;">Miksi: ${x.car.notes}</div>
+                ${hint ? `<div class="small" style="margin-top:6px;"><b>${hint}</b></div>` : ``}
+                ${matched.length ? `<div style="margin-top:8px;">${tagsHtml}</div>` : ``}
+                <div class="muted" style="margin-top:8px;">Piilonimi: <code>${x.car.code}</code></div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("")}
+    </div>
+
+    <details>
+      <summary>Näytä “painotukset” joita annoit (debug)</summary>
+      <p class="muted">Nämä ovat sisäisiä tageja, joilla pisteytys laskettiin.</p>
+      <div>
+        ${Object.entries(state.scores).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<span class="tag">${k}: ${v}</span>`).join("")}
+      </div>
+    </details>
+
+    <p class="muted" style="margin-top:12px;">
+      Haluatko seuraavaksi “periaatefiltterin” tähän loppuun? (Esim. sulje tietyt merkit pois ja näytä #6–#10.)
+    </p>
+  `;
+
+  document.getElementById("copyBtn").onclick = async () => {
+    try { await navigator.clipboard.writeText(copyText); alert("Kopioitu leikepöydälle!"); }
+    catch { alert("Kopiointi ei onnistunut selaimessa. Voit valita ja kopioida käsin."); }
+  };
+  document.getElementById("homeBtn").onclick = gotoHome;
+
+  // Back/restart buttons
+  const backBtn = document.getElementById("backBtn");
+  const restartBtn = document.getElementById("restartBtn");
+  backBtn.disabled = true;
+  restartBtn.onclick = reset;
+}
+
+function render(){
+  const screen = document.getElementById("screen");
+  const bar = document.getElementById("bar");
+
+  // Back/restart buttons are controlled per view
+  if (state.view === "home") {
+    bar.style.width = "0%";
+    document.getElementById("backBtn").disabled = true;
+    document.getElementById("restartBtn").onclick = reset;
+    renderHome(screen);
+    return;
+  }
+  if (state.view === "quiz") { renderQuiz(screen, bar); return; }
+  if (state.view === "results") { renderResults(screen, bar); return; }
+}
+
+render();
+</script>
+</body>
+</html>
